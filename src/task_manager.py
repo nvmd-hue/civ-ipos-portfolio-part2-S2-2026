@@ -8,6 +8,11 @@ def is_duplicate_title(tasks, title) -> bool:
     return any(task.title.lower() == title.lower() for task in tasks)
 
 
+def is_valid_date_format(due_date) -> datetime:
+    # Validate correct date format. Returns ValueError if not valid.
+    return datetime.strptime(due_date, "%d-%m-%Y")
+
+
 def add_task(tasks, title, description, due_date):
     """
     Add a new task to the task list.
@@ -21,19 +26,9 @@ def add_task(tasks, title, description, due_date):
     Returns:
         bool: True if the task is added successfully, False otherwise.
 
-    Raises:
-        ValueError: If the due date is not in the correct format.
-
     Side Effects:
         - Saves the updated task list to a file using `save_tasks`.
     """
-    # Validate due date format
-    try:
-        datetime.strptime(due_date, "%d-%m-%Y")
-    except ValueError:
-        print("Error: Invalid date format. Use DD-MM-YYYY.")
-        return False
-
     tasks.append(Task(title, description, due_date))
     save_tasks(tasks)
     return True

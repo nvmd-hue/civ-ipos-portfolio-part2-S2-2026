@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 from src.task_manager import (add_task, delete_task, filter_tasks_by_status,
                               is_duplicate_title, is_valid_date_format)
 from src.file_handler import save_tasks, load_tasks
@@ -53,13 +54,21 @@ class TestTaskManager(unittest.TestCase):
         result = is_duplicate_title(self.tasks, "test task")
         self.assertTrue(result)
 
-    def test_add_invalid_due_date(self):
+    def test_invalid_date_format_raises_error(self):
         """
-        Test adding a task with an invalid due date format.
-        Verify that the function handles invalid input gracefully and returns False.
+        Test adding a date with an invalid due date format.
+        Verify that the function handles invalid input and returns
+        ValueError.
         """
-        result = add_task(self.tasks, "Test Task", "Description", "2024-12-01")
-        self.assertFalse(result)
+        self.assertRaises(ValueError, is_valid_date_format, "2024-12-01")
+
+    def test_valid_date_format(self):
+        """
+        Test adding a date with correct due date format.
+        Verify that the function handles valid input and returns datetime.
+        """
+        result = is_valid_date_format("10-10-2026")
+        self.assertIsInstance(result, datetime)
 
     def test_delete_task(self):
         """

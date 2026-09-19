@@ -1,5 +1,6 @@
 from src.task_manager import add_task, delete_task, list_tasks, is_duplicate_title
 from src.file_handler import load_tasks
+from task_manager import is_valid_date_format
 
 
 def main():
@@ -13,7 +14,6 @@ def main():
 
         choice = input("Enter your choice: ")
         if choice == "1":
-
             # Validate no task duplication
             title = input("Title: ")
             if is_duplicate_title(tasks, title):
@@ -21,8 +21,17 @@ def main():
                 continue
 
             description = input("Description: ")
+
+            # Validate correct date format
             due_date = input("Due Date (DD-MM-YYYY): ")
+            try:
+                is_valid_date_format(due_date)
+            except ValueError:
+                print("Error: Invalid date format. Use DD-MM-YYYY.")
+                continue
+
             add_task(tasks, title, description, due_date)
+
         elif choice == "2":
             title = input("Title of the task to delete: ")
             if delete_task(tasks, title):
