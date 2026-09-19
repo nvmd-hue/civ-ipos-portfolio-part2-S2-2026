@@ -1,4 +1,4 @@
-from src.task_manager import add_task, delete_task, list_tasks
+from src.task_manager import add_task, delete_task, list_tasks, is_duplicate_title
 from src.file_handler import load_tasks
 
 
@@ -13,7 +13,13 @@ def main():
 
         choice = input("Enter your choice: ")
         if choice == "1":
+
+            # Validate no task duplication
             title = input("Title: ")
+            if is_duplicate_title(tasks, title):
+                print("Error: A task with this title already exists.")
+                continue
+
             description = input("Description: ")
             due_date = input("Due Date (DD-MM-YYYY): ")
             add_task(tasks, title, description, due_date)

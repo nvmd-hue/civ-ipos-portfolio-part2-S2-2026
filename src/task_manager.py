@@ -3,6 +3,11 @@ from src.file_handler import save_tasks
 from datetime import datetime
 
 
+def is_duplicate_title(tasks, title) -> bool:
+    # Prevent duplicate tasks via case-insensitive check.
+    return any(task.title.lower() == title.lower() for task in tasks)
+
+
 def add_task(tasks, title, description, due_date):
     """
     Add a new task to the task list.
@@ -22,11 +27,6 @@ def add_task(tasks, title, description, due_date):
     Side Effects:
         - Saves the updated task list to a file using `save_tasks`.
     """
-    # Prevent duplicate tasks
-    if any(task.title == title for task in tasks):
-        print("Error: A task with this title already exists.")
-        return False
-
     # Validate due date format
     try:
         datetime.strptime(due_date, "%d-%m-%Y")

@@ -1,5 +1,6 @@
 import unittest
-from src.task_manager import add_task, delete_task, filter_tasks_by_status
+from src.task_manager import (add_task, delete_task, filter_tasks_by_status,
+                              is_duplicate_title, is_valid_date_format)
 from src.file_handler import save_tasks, load_tasks
 from src.task import Task
 import os
@@ -43,14 +44,14 @@ class TestTaskManager(unittest.TestCase):
         self.assertTrue(result)
         self.assertEqual(len(self.tasks), 1)
 
-    def test_add_duplicate_task(self):
+    def test_is_duplicate_task(self):
         """
-        Test adding a duplicate task with the same title.
-        Verify that duplicates are not allowed and the function returns False.
+        Test adding a duplicate task with the same case-insensitive title.
+        Verify that duplicates are not allowed and the function returns True if duplicate found.
         """
-        add_task(self.tasks, "Test Task", "Description", "01-12-2021")
-        result = add_task(self.tasks, "Test Task", "New Description", "02-12-2024")
-        self.assertFalse(result)
+        add_task(self.tasks, "Test Task", "description", "10-10-2026")
+        result = is_duplicate_title(self.tasks, "test task")
+        self.assertTrue(result)
 
     def test_add_invalid_due_date(self):
         """
