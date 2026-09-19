@@ -1,6 +1,6 @@
-from src.task_manager import add_task, delete_task, list_tasks, is_duplicate_title
+from src.task_manager import (add_task, delete_task, is_duplicate_title,
+                              is_valid_date_format)
 from src.file_handler import load_tasks
-from task_manager import is_valid_date_format
 
 
 def main():
@@ -38,8 +38,19 @@ def main():
                 print("Task deleted successfully.")
             else:
                 print("Task not found.")
+
         elif choice == "3":
-            list_tasks(tasks)
+            # Check if task list is empty. Empty lists eval to bool False.
+            if not tasks:
+                print("No tasks found.")
+                continue
+            # Task list is not empty so print contents to console
+            for task in tasks:
+                print(
+                    f"{task.title} | {task.description} | "
+                    f"Due: {task.due_date} | Status: {task.status}"
+                )
+
         elif choice == "4":
             print("Exiting Task Manager.")
             break
