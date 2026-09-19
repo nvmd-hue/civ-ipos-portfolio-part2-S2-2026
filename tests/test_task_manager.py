@@ -11,8 +11,9 @@ TEST_FILE = "test_tasks.bin"
 
 class TestTaskManager(unittest.TestCase):
     """
-    Unit tests for Task Manager functionalities including adding, deleting, filtering,
-    and persisting tasks to and from a binary file.
+    Unit tests for Task Manager functionalities including adding, deleting,
+    input validation and filtering, and persisting tasks to and from a
+    binary file.
     """
 
     def setUp(self):
@@ -57,7 +58,7 @@ class TestTaskManager(unittest.TestCase):
     def test_invalid_date_format_raises_error(self):
         """
         Test adding a date with an invalid due date format.
-        Verify that the function handles invalid input and returns
+        Verify that the function handles invalid input and raises a
         ValueError.
         """
         self.assertRaises(ValueError, is_valid_date_format, "2024-12-01")
@@ -65,7 +66,7 @@ class TestTaskManager(unittest.TestCase):
     def test_valid_date_format(self):
         """
         Test adding a date with correct due date format.
-        Verify that the function handles valid input and returns datetime.
+        Verify that the function handles valid input and returns datetime if valid.
         """
         result = is_valid_date_format("10-10-2026")
         self.assertIsInstance(result, datetime)
