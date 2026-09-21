@@ -49,7 +49,8 @@ class TestTaskManager(unittest.TestCase):
     def test_is_duplicate_task(self):
         """
         Test adding a duplicate task with the same case-insensitive title.
-        Verify that duplicates are not allowed and the function returns True if duplicate found.
+        Verify that duplicates are not allowed and the function returns True
+        if duplicate found.
         """
         add_task(self.tasks, "Test Task", "description", "10-10-2026")
         result = is_duplicate_title(self.tasks, "test task")
