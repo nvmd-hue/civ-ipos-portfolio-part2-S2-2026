@@ -4,11 +4,14 @@ from datetime import datetime
 
 
 def is_duplicate_title(tasks, title) -> bool:
-    # Prevent duplicate tasks via case-insensitive check.
+    """Check if a task with the given title already exists
+     (case-insensitive)."""
     return any(task.title.lower() == title.lower() for task in tasks)
 
 
 def is_valid_date_format(due_date) -> datetime:
+    """Check if a due_date input is valid. Returns ValueError if unable to
+    be parsed by datetime()."""
     # Validate correct date format. Returns ValueError if not valid.
     return datetime.strptime(due_date, "%d-%m-%Y")
 
