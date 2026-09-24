@@ -3,6 +3,19 @@ from src.file_handler import save_tasks
 from datetime import datetime
 
 
+def is_duplicate_title(tasks, title) -> bool:
+    """Check if a task with the given title already exists
+     (case-insensitive)."""
+    return any(task.title.lower() == title.lower() for task in tasks)
+
+
+def is_valid_date_format(due_date) -> datetime:
+    """Check if a due_date input is valid. Returns ValueError if unable to
+    be parsed by datetime()."""
+    # Validate correct date format. Returns ValueError if not valid.
+    return datetime.strptime(due_date, "%d-%m-%Y")
+
+
 def add_task(tasks, title, description, due_date):
     """
     Add a new task to the task list.
@@ -16,24 +29,9 @@ def add_task(tasks, title, description, due_date):
     Returns:
         bool: True if the task is added successfully, False otherwise.
 
-    Raises:
-        ValueError: If the due date is not in the correct format.
-
     Side Effects:
         - Saves the updated task list to a file using `save_tasks`.
     """
-    # Prevent duplicate tasks
-    if any(task.title == title for task in tasks):
-        print("Error: A task with this title already exists.")
-        return False
-
-    # Validate due date format
-    try:
-        datetime.strptime(due_date, "%d-%m-%Y")
-    except ValueError:
-        print("Error: Invalid date format. Use DD-MM-YYYY.")
-        return False
-
     tasks.append(Task(title, description, due_date))
     save_tasks(tasks)
     return True
@@ -59,41 +57,6 @@ def delete_task(tasks, title):
             save_tasks(tasks)
             return True
     return False
-
-
-def list_tasks(tasks, status=None):
-    """
-    Display tasks in the task list, optionally filtered by status.
-
-    Args:
-        tasks (list): The list of existing Task objects.
-        status (str, optional): The status to filter tasks
-        by (e.g., "pending" or "completed").
-
-    Returns:
-        None
-
-    Side Effects:
-        - Prints the list of tasks to the console.
-    """
-    if not status:
-        # If status is not set
-        filtered = tasks
-    else:
-        # Filter tasks based on their status
-        filtered = []
-        for task in tasks:
-            if task.status == status:
-                filtered.append(task)
-
-    if not filtered:
-        print("No tasks found.")
-        return
-    for task in filtered:
-        print(
-            f"{task.title} | {task.description} | "
-            f"Due: {task.due_date} | Status: {task.status}"
-        )
 
 
 def filter_tasks_by_status(tasks, status):
