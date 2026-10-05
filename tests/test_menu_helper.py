@@ -19,6 +19,3 @@ class TestMenuHelper(unittest.TestCase):
         )
         mock_ask.assert_called_once()
         self.assertEqual(result, "Add Task")
-
-    if __name__ == "__main__":
-        unittest.main()
