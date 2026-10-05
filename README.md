@@ -76,7 +76,10 @@ python -m pip install -e .
 
 ---
 
-2. **To update project dependences dependencies**:
+2. **To update project dependencies**:
+
+The project relies on the following package:
+* **`questionary`**: Powers interactive CLI prompts
 
 ```bash
 pip install -r requirements-dev.txt #(may require python -m)
