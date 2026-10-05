@@ -100,8 +100,6 @@ class TestCLIHandlers(unittest.TestCase):
         mock_delete.assert_called_once_with(tasks, 'Task 1')
         mock_print.assert_called_once_with("Task deleted successfully.")
 
-
-
     # Tests for main.handle_list_task_cli()
     @patch('builtins.print')
     def test_handle_list_task_cli_fail(self, mock_print):
@@ -124,3 +122,41 @@ class TestCLIHandlers(unittest.TestCase):
         mock_print.assert_called_once_with(
             "Task 1 | Do things | Due: 10-10-2026 | Status: Pending"
         )
+
+    # Tests for main.handle_list_change_status()
+    @patch('builtins.print')
+    @patch(
+        'main.select',
+        side_effect=['NonExistent Task | Do things | Due: 10-10-2026 | '
+                     'Status: Pending', 'Completed']
+    )
+    def test_handle_change_task_status_fail(
+        self, mock_select, mock_print
+    ):
+        mock_task = MagicMock(
+            title='Task 1', description='Do things', due_date='10-10-2026',
+            status='Pending'
+        )
+        tasks = [mock_task]
+        main.handle_change_task_status(tasks)
+
+        mock_print.assert_called_once_with("Task not found.")
+
+    @patch('builtins.print')
+    @patch(
+        'main.select',
+        side_effect=['Task 1 | Do things | Due: 10-10-2026 | '
+                     'Status: Pending', 'Completed']
+    )
+    def test_handle_change_task_status_pass(
+        self, mock_select, mock_print
+    ):
+        mock_task = MagicMock(
+            title='Task 1', description='Do things', due_date='10-10-2026',
+            status='Pending'
+        )
+        tasks = [mock_task]
+        main.handle_change_task_status(tasks)
+
+        mock_print.assert_called_once_with("Task status updated successfully.")
+        assert mock_task.status == 'Completed'

@@ -61,12 +61,51 @@ def handle_list_task_cli(tasks):
         )
 
 
+def handle_change_task_status(tasks):
+    """Encapsulates the CLI prompt flow for changing a task's status."""
+    if not tasks:
+        print("No tasks found.")
+        return
+
+    choices = [(f"{task.title} | {task.description} | Due:"
+                f" {task.due_date} | Status: {task.status}") for task in tasks]
+    choices.append("Cancel")
+
+    selected = select("Select task to change status of:", choices)
+
+    if selected == "Cancel" or not selected:
+        return
+
+    new_status = select(
+        "Select new status:",
+        ["Pending", "In Progress", "Completed", "Cancel"]
+    )
+    if new_status == "Cancel" or not new_status:
+        return
+
+    # Extract only title before first separator
+    task_title = selected.split(" | ")[0]
+
+    # Find and update the task status
+    for task in tasks:
+        if task.title == task_title:
+            task.status = new_status
+            print("Task status updated successfully.")
+            return
+
+    print("Task not found.")
+
+
 def main():
     tasks = load_tasks()
     while True:
         choice = select(
             "Task Manager CLI", [
-                "Add Task", "Delete Task", "List Tasks", "Exit"
+                "Add Task",
+                "Delete Task",
+                "List Tasks",
+                "Change Task Status",
+                "Exit"
             ]
         )
 
@@ -78,6 +117,9 @@ def main():
             print()
         elif choice == "List Tasks":
             handle_list_task_cli(tasks)
+            print()
+        elif choice == "Change Task Status":
+            handle_change_task_status(tasks)
             print()
         elif choice == "Exit" or choice is None:
             print("Exiting Task Manager.")
