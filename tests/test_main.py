@@ -87,7 +87,7 @@ class TestCLIHandlers(unittest.TestCase):
         'main.select',
         return_value='Task 1 | Do things | Due: 10-10-2026 | Status: Pending'
     )
-    def test_handle_delete_task_cli_fail(
+    def test_handle_delete_task_cli_pass(
         self, mock_select, mock_print, mock_delete
     ):
         mock_task = MagicMock(
