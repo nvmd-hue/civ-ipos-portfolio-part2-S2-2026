@@ -3,6 +3,7 @@ import unittest
 import main
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 
@@ -63,12 +64,18 @@ class TestCLIHandlers(unittest.TestCase):
     # Tests for main.handle_delete_task_cli()
     @patch('main.delete_task', return_value=False)
     @patch('builtins.print')
-    @patch('builtins.input', return_value='Task 1')
+    @patch(
+        'main.select',
+        return_value='Task 1 | Do things | Due: 10-10-2026 | Status: Pending'
+    )
     def test_handle_delete_task_cli_fail(
-        self, mock_input, mock_print,
-        mock_delete
+        self, mock_select, mock_print, mock_delete
     ):
-        tasks = []
+        mock_task = MagicMock(
+            title='Task 1', description='Do things', due_date='10-10-2026',
+            status='Pending'
+        )
+        tasks = [mock_task]
         main.handle_delete_task_cli(tasks)
 
         mock_delete.assert_called_once_with(tasks, 'Task 1')
@@ -76,15 +83,24 @@ class TestCLIHandlers(unittest.TestCase):
 
     @patch('main.delete_task', return_value=True)
     @patch('builtins.print')
-    @patch('builtins.input', return_value='Task 1')
-    def test_handle_delete_task_cli_pass(
-        self, mock_input, mock_print, mock_delete
+    @patch(
+        'main.select',
+        return_value='Task 1 | Do things | Due: 10-10-2026 | Status: Pending'
+    )
+    def test_handle_delete_task_cli_fail(
+        self, mock_select, mock_print, mock_delete
     ):
-        tasks = []
+        mock_task = MagicMock(
+            title='Task 1', description='Do things', due_date='10-10-2026',
+            status='Pending'
+        )
+        tasks = [mock_task]
         main.handle_delete_task_cli(tasks)
 
         mock_delete.assert_called_once_with(tasks, 'Task 1')
         mock_print.assert_called_once_with("Task deleted successfully.")
+
+
 
     # Tests for main.handle_list_task_cli()
     @patch('builtins.print')
@@ -98,9 +114,7 @@ class TestCLIHandlers(unittest.TestCase):
     @patch('builtins.print')
     def test_handle_list_task_cli_pass(self, mock_print):
         mock_task = MagicMock(
-            title='Task 1',
-            description='Do things',
-            due_date='10-10-2026',
+            title='Task 1', description='Do things', due_date='10-10-2026',
             status='Pending'
         )
         tasks = [mock_task]
