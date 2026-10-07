@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from src.menu_helper import select
+from menu_helper import select
 
 
 class TestMenuHelper(unittest.TestCase):
