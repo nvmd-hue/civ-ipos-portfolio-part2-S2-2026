@@ -1,6 +1,7 @@
 from src.task_manager import (add_task, delete_task, is_duplicate_title,
                               is_valid_date_format)
 from src.file_handler import load_tasks
+from src.menu_helper import select
 
 
 def handle_add_task_cli(tasks):
@@ -23,9 +24,24 @@ def handle_add_task_cli(tasks):
 
 
 def handle_delete_task_cli(tasks):
-    """Encapsulates the CLI prompt flow for deleting a task."""
-    title = input("Title of the task to delete: ")
-    if delete_task(tasks, title):
+    """Encapsulates the CLI prompt flow for deleting a task using
+    menu_helper."""
+    if not tasks:
+        print("No Tasks found.")
+        return
+
+    choices = [(f"{task.title} | {task.description} | Due:"
+                f" {task.due_date} | Status: {task.status}") for task in tasks]
+    choices.append("Cancel")
+
+    selected = select("Select task to delete:", choices)
+
+    if selected == "Cancel" or not selected:
+        return
+
+    # Extract only title before first separator
+    task_title = selected.split(" | ")[0]
+    if delete_task(tasks, task_title):
         print("Task deleted successfully.")
     else:
         print("Task not found.")
@@ -45,27 +61,69 @@ def handle_list_task_cli(tasks):
         )
 
 
+def handle_change_task_status(tasks):
+    """Encapsulates the CLI prompt flow for changing a task's status."""
+    if not tasks:
+        print("No tasks found.")
+        return
+
+    choices = [(f"{task.title} | {task.description} | Due:"
+                f" {task.due_date} | Status: {task.status}") for task in tasks]
+    choices.append("Cancel")
+
+    selected = select("Select task to change status of:", choices)
+
+    if selected == "Cancel" or not selected:
+        return
+
+    new_status = select(
+        "Select new status:",
+        ["Pending", "In Progress", "Completed", "Cancel"]
+    )
+    if new_status == "Cancel" or not new_status:
+        return
+
+    # Extract only title before first separator
+    task_title = selected.split(" | ")[0]
+
+    # Find and update the task status
+    for task in tasks:
+        if task.title == task_title:
+            task.status = new_status
+            print("Task status updated successfully.")
+            return
+
+    print("Task not found.")
+
+
 def main():
     tasks = load_tasks()
     while True:
-        print("\nTask Manager CLI")
-        print("1. Add Task")
-        print("2. Delete Task")
-        print("3. List Tasks")
-        print("4. Exit")
-        choice = input("Enter your choice: ")
+        choice = select(
+            "Task Manager CLI", [
+                "Add Task",
+                "Delete Task",
+                "List Tasks",
+                "Change Task Status",
+                "Exit"
+            ]
+        )
 
-        if choice == "1":
+        if choice == "Add Task":
             handle_add_task_cli(tasks)
-        elif choice == "2":
+            print()
+        elif choice == "Delete Task":
             handle_delete_task_cli(tasks)
-        elif choice == "3":
+            print()
+        elif choice == "List Tasks":
             handle_list_task_cli(tasks)
-        elif choice == "4":
+            print()
+        elif choice == "Change Task Status":
+            handle_change_task_status(tasks)
+            print()
+        elif choice == "Exit" or choice is None:
             print("Exiting Task Manager.")
             break
-        else:
-            print("Invalid choice. Try again.")
 
 
 if __name__ == "__main__":
